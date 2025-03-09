@@ -66,7 +66,7 @@
         
         function logMessage(message) {
             const logs = document.getElementById("logs");
-            const timestamp = new Date().toLocaleString();
+            const timestamp = new Date().toLocaleString("en-US", { timeZone: "Asia/Manila" });
             const fullMessage = `[${timestamp}] ${message}`;
 
             // Append log message to textarea
@@ -93,14 +93,19 @@
             loadLogsFromLocal();
         };
 
-        // **Scheduler to check time and trigger dispensePill**
+        // **Scheduler to check time in Philippine Time (PHT, UTC+8)**
         setInterval(() => {
             const now = new Date();
-            const currentTime = now.toTimeString().slice(0, 5); // "HH:MM" format
+            const phTime = new Intl.DateTimeFormat("en-US", { 
+                timeZone: "Asia/Manila", 
+                hour: "2-digit", 
+                minute: "2-digit", 
+                hour12: false 
+            }).format(now);
 
-            if (scheduledTimes.includes(currentTime)) {
+            if (scheduledTimes.includes(phTime)) {
                 dispensePill();
-                logMessage("Auto-dispensing at: " + currentTime);
+                logMessage("Auto-dispensing at: " + phTime + " (PHT)");
             }
         }, 60000); // Check every 60 seconds
     </script>
