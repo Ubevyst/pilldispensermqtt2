@@ -41,6 +41,7 @@
         });
 
         function dispensePill() {
+		console.log('dispensing')
             client.publish("pill/dispenser", "dispense");
             logMessage("Sent: dispense");
         }
@@ -103,7 +104,11 @@
                 hour12: false 
             }).format(now);
 
+		console.log('phTime', phTime)
+		console.log('scheduledTimes', scheduledTimes)
+
             if (scheduledTimes.includes(phTime)) {
+		console.log('in if')
                 dispensePill();
                 logMessage("Auto-dispensing at: " + phTime + " (PHT)");
             }
