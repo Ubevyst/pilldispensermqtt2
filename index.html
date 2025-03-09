@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pill Dispenser Control</title>
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        .status {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .button {
+            display: block;
+            margin: 10px auto;
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .log {
+            max-width: 600px;
+            margin: auto;
+            text-align: left;
+            border: 1px solid #ccc;
+            padding: 10px;
+            height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Pill Dispenser Control</h1>
+    <p class="status">Connecting to MQTT broker...</p>
+    
+    <button class="button" onclick="sendDispense()">Dispense Pill</button>
+    
+    <h3>Set Dispense Time</h3>
+    <input type="time" id="dispenseTime">
+    <button class="button" onclick="setDispenseTime()">Set Time</button>
+    
+    <h3>Logs</h3>
+    <div class="log" id="log"></div>
+
+    <script>
+        const broker = "wss://f8ce84ba874c4225b531260f66793bc4.s1.eu.hivemq.cloud:8884/mqtt";
+        const options = {
+            username: "your-username",
+            password: "your-password",
+            protocolVersion: 4
+        };
+        
+        const client = mqtt.connect(broker, options);
+
+        client.on("connect", () => {
+            document.querySelector(".status").textContent = "Connected to MQTT broker";
+            logMessage("Connected to MQTT broker");
+        });
+
+        client.on("error", (err) => {
+            document.querySelector(".status").textContent = "Error: " + err.message;
+            logMessage("Error: " + err.message);
+        });
+
+        function sendDispense() {
+            client.publish("pill/dispenser", "dispense");
+            logMessage("Sent: dispense");
+        }
+
+        function setDispenseTime() {
+            let time = document.getElementById("dispenseTime").value;
+            if (time) {
+                client.publish("pill/dispenser/time", time);
+                logMessage("Sent: " + time);
+            } else {
+                alert("Please enter a valid time!");
+            }
+        }
+
+        function logMessage(msg) {
+            let logDiv = document.getElementById("log");
+            logDiv.innerHTML += msg + "<br>";
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+    </script>
+</body>
+</html>
