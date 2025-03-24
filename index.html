@@ -29,6 +29,7 @@
         
         const client = mqtt.connect(brokerUrl, options);
         const scheduledTimes = [];
+        const lastDispensed = {}; // Track last dispense date for each scheduled time
 
         client.on("connect", function () {
             document.getElementById("status").innerText = "Connected to MQTT broker";
@@ -41,7 +42,6 @@
         });
 
         function dispensePill() {
-		console.log('dispensing')
             client.publish("pill/dispenser", "dispense");
             logMessage("Sent: dispense");
         }
@@ -50,6 +50,7 @@
             const timeInput = document.getElementById("dispenseTime").value;
             if (timeInput && !scheduledTimes.includes(timeInput)) {
                 scheduledTimes.push(timeInput);
+                lastDispensed[timeInput] = null; // Reset dispense tracking
                 updateScheduleList();
                 logMessage("Scheduled dispense at: " + timeInput);
             }
@@ -104,14 +105,15 @@
                 hour12: false 
             }).format(now);
 
-		console.log('phTime', phTime)
-		console.log('scheduledTimes', scheduledTimes)
+            const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
 
-            if (scheduledTimes.includes(phTime)) {
-		console.log('in if')
-                dispensePill();
-                logMessage("Auto-dispensing at: " + phTime + " (PHT)");
-            }
+            scheduledTimes.forEach(time => {
+                if (phTime === time && lastDispensed[time] !== today) {
+                    dispensePill();
+                    logMessage("Auto-dispensing at: " + phTime + " (PHT)");
+                    lastDispensed[time] = today; // Mark as dispensed for today
+                }
+            });
         }, 10000); // Check every 10 seconds
     </script>
 </body>
