@@ -21,10 +21,13 @@
     <textarea id="logs" rows="10" cols="50" readonly></textarea>
 
     <script>
-        const brokerUrl = "wss://873ffaf907774b0781a832279ba97bd0.s1.eu.hivemq.cloud:8883";
+        const brokerUrl = "wss://873ffaf907774b0781a832279ba97bd0.s1.eu.hivemq.cloud:8884/mqtt";
         const options = {
             username: "wngjpdh",
-            password: "Edgviper2021"
+            password: "Edgviper2021",
+            protocolVersion: 5,
+            clean: true,
+            reconnectPeriod: 1000,
         };
         
         const client = mqtt.connect(brokerUrl, options);
@@ -71,11 +74,9 @@
             const timestamp = new Date().toLocaleString("en-US", { timeZone: "Asia/Manila" });
             const fullMessage = `[${timestamp}] ${message}`;
 
-            // Append log message to textarea
             logs.value += fullMessage + "\n";
             logs.scrollTop = logs.scrollHeight;
 
-            // Save to localStorage
             saveLogToLocal(fullMessage);
         }
 
@@ -90,12 +91,10 @@
             document.getElementById("logs").value = logHistory.join("\n") + "\n";
         }
 
-        // Load logs when page loads
         window.onload = function () {
             loadLogsFromLocal();
         };
 
-        // **Scheduler to check time in Philippine Time (PHT, UTC+8)**
         setInterval(() => {
             const now = new Date();
             const phTime = new Intl.DateTimeFormat("en-US", { 
@@ -105,17 +104,16 @@
                 hour12: false 
             }).format(now);
 
-            const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+            const today = new Date().toISOString().split('T')[0];
 
             scheduledTimes.forEach(time => {
                 if (phTime === time && lastDispensed[time] !== today) {
                     dispensePill();
                     logMessage("Auto-dispensing at: " + phTime + " (PHT)");
-                    lastDispensed[time] = today; // Mark as dispensed for today
+                    lastDispensed[time] = today;
                 }
             });
-        }, 10000); // Check every 10 seconds
+        }, 10000);
     </script>
 </body>
 </html>
-
