@@ -69,7 +69,7 @@
         function logMessage(message) {
             const logs = document.getElementById("logs");
             const timestamp = new Date().toLocaleString("en-US", { timeZone: "Asia/Manila" });
-            const fullMessage = `[${timestamp}] ${message}`;
+            const fullMessage = [${timestamp}] ${message};
 
             // Append log message to textarea
             logs.value += fullMessage + "\n";
