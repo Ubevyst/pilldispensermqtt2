@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>MediBuddy</title>
-    <script src="https://unpkg.com/mqtt@5.10.4/dist/mqtt.min.js"></script>
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 </head>
 <body>
     <h1>MediBuddy</h1>
@@ -21,14 +21,12 @@
     <textarea id="logs" rows="10" cols="50" readonly></textarea>
 
     <script>
-        // MQTT Broker Details
-        const brokerUrl = "wss://873ffaf907774b0781a832279ba97bd0.s1.eu.hivemq.cloud";
+        const brokerUrl = "wss://873ffaf907774b0781a832279ba97bd0.s1.eu.hivemq.cloud:8883";
         const options = {
-            username: "wngjpdh", // FIXED: Added missing comma
+            username: "wngjpdh",
             password: "Edgviper2021"
         };
-
-        // Connect to MQTT Broker
+        
         const client = mqtt.connect(brokerUrl, options);
         const scheduledTimes = [];
         const lastDispensed = {}; // Track last dispense date for each scheduled time
@@ -37,7 +35,7 @@
             document.getElementById("status").innerText = "Connected to MQTT broker";
             logMessage("Connected to MQTT broker");
         });
-
+        
         client.on("error", function (error) {
             document.getElementById("status").innerText = "Error: " + error;
             logMessage("MQTT Error: " + error);
@@ -47,7 +45,7 @@
             client.publish("pill/dispenser", "dispense");
             logMessage("Sent: dispense");
         }
-
+        
         function scheduleDispense() {
             const timeInput = document.getElementById("dispenseTime").value;
             if (timeInput && !scheduledTimes.includes(timeInput)) {
@@ -67,11 +65,11 @@
                 list.appendChild(item);
             });
         }
-
+        
         function logMessage(message) {
             const logs = document.getElementById("logs");
             const timestamp = new Date().toLocaleString("en-US", { timeZone: "Asia/Manila" });
-            const fullMessage = `[${timestamp}] ${message}`;
+            const fullMessage = [${timestamp}] ${message};
 
             // Append log message to textarea
             logs.value += fullMessage + "\n";
