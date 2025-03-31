@@ -21,7 +21,7 @@
     <textarea id="logs" rows="10" cols="50" readonly></textarea>
 
     <script>
-        const brokerUrl = "wss://873ffaf907774b0781a832279ba97bd0.s1.eu.hivemq.cloud:8884/mqtt";
+        const brokerUrl = "wss://873ffaf907774b0781a832279ba97bd0.s1.eu.hivemq.cloud:8883";
         const options = {
             username: "wngjpdh",
             password: "Edgviper2021"
@@ -69,7 +69,7 @@
         function logMessage(message) {
             const logs = document.getElementById("logs");
             const timestamp = new Date().toLocaleString("en-US", { timeZone: "Asia/Manila" });
-            const fullMessage = [${timestamp}] ${message};
+            const fullMessage = `[${timestamp}] ${message}`;
 
             // Append log message to textarea
             logs.value += fullMessage + "\n";
