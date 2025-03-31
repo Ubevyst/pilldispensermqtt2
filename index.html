@@ -21,11 +21,14 @@
     <textarea id="logs" rows="10" cols="50" readonly></textarea>
 
     <script>
-        const brokerUrl = "wss://873ffaf907774b0781a832279ba97bd0.s1.eu.hivemq.cloud/mqtt"; // FIXED
-        const options = {
-            username: "wngjpdh",
-            password: "Edgviper2021"
-        };
+       const brokerUrl = "wss://873ffaf907774b0781a832279ba97bd0.s1.eu.hivemq.cloud/mqtt"; 
+const options = {
+    username: "wngjpdh",
+    password: "Edgviper2021" // ✅ FIXED COMMA ISSUE
+};
+
+const client = mqtt.connect(brokerUrl, options);
+
         
         const client = mqtt.connect(brokerUrl, options);
         const scheduledTimes = [];
